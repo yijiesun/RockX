@@ -18,6 +18,4 @@ target_link_libraries(${PROJECT_NAME}
         ${RockX_LIBS}  ${OpenCV_LIBS} pthread)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${OUT_PATH})
-install(FILES ${IMGS} DESTINATION ${OUT_PATH})
-install(DIRECTORY frame_in DESTINATION ${OUT_PATH})
-install(FILES config.txt  video_frame_list.txt DESTINATION ${OUT_PATH})
+install(FILES config.txt DESTINATION ${OUT_PATH})

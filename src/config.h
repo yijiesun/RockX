@@ -50,6 +50,8 @@ void get_move_buff_cnt(int & cnt);
 void get_roi_limit(bool &roi);
 void get_knn_box_exist_cnt(int & cnt);
 void get_show_knn_box(bool &show);
+void get_use_camera_or_video(bool &cov);
+void get_save_video(bool &sv);
 #endif
 
 

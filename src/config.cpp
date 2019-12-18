@@ -173,6 +173,49 @@ void get_show_knn_box(bool &show)
     }
 	show = (bool)num;
 }
+void get_use_camera_or_video(bool &cov)
+{
+	FILE *read_setup;
+    std::string config_file = "config.txt";
+	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
+		puts("Fail to open config.txt!");
+		exit(0);
+	}
+	char str[200];
+	int num;
+	while (fgets(str, 100, read_setup) != NULL) {
+       if (_str_cmp(str, (char *)"use_camera_or_video"))
+		{
+			const char * split = " ";
+			char *p = strtok(str, split);
+			p = strtok(NULL, split);
+			sscanf(p, "%d", &num);
+		}
+    }
+	cov = (bool)num;
+}
+
+void get_save_video(bool &sv)
+{
+	FILE *read_setup;
+    std::string config_file = "config.txt";
+	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
+		puts("Fail to open config.txt!");
+		exit(0);
+	}
+	char str[200];
+	int num;
+	while (fgets(str, 100, read_setup) != NULL) {
+       if (_str_cmp(str, (char *)"save_video"))
+		{
+			const char * split = " ";
+			char *p = strtok(str, split);
+			p = strtok(NULL, split);
+			sscanf(p, "%d", &num);
+		}
+    }
+	sv = (bool)num;
+}
 void get_roi_limit(bool &roi)
 {
 	FILE *read_setup;
@@ -318,6 +361,7 @@ void get_knn_box_exist_cnt(int & cnt)
 		
     }
 }
+
 void get_move_buff_cnt(int & cnt)
 {
 		FILE *read_setup;

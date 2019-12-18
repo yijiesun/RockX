@@ -1,7 +1,18 @@
 #include "config.h"
 using namespace std;
-
-bool _str_cmp(char* a, char *b)
+CONFIG::CONFIG()
+{
+	config_file = "config.txt";
+	if ((file_open = fopen(config_file.c_str(), "r")) == NULL) {
+	puts("Fail to open config.txt!");
+	exit(0);
+	}
+}
+CONFIG::~CONFIG()
+{
+	free(file_open);
+}
+bool CONFIG::_str_cmp(char* a, char *b)
 {	
 	int sum = 0;
 	for (int i = 0; b[i] != '\0'; i++)
@@ -16,18 +27,13 @@ bool _str_cmp(char* a, char *b)
 	return !strcmp(tmp,b);
 }
 
-void get_param_mssd_img(std::string &in,std::string &out)
+void CONFIG::get_param_mssd_img(std::string &in,std::string &out)
 {
+	fseek( file_open, 0, SEEK_SET );
     char img_in[200];
     char img_out[200];
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
         if (_str_cmp(str, (char *)"mssd_img_in"))
 			strncpy(img_in, str + 12, 200);
 		else if (_str_cmp(str, (char *)"mssd_img_out"))
@@ -38,18 +44,13 @@ void get_param_mssd_img(std::string &in,std::string &out)
     in = img_in;
     out = img_out;
 }
-void get_param_mssd_video_knn(std::string &in,std::string &out)
+void CONFIG::get_param_mssd_video_knn(std::string &in,std::string &out)
 {
+	fseek( file_open, 0, SEEK_SET );
     char img_in[200];
     char img_out[200];
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
         if (_str_cmp(str, (char *)"mssd_video_knn_in"))
 			strncpy(img_in, str + 18, 200);
 		else if (_str_cmp(str, (char *)"mssd_video_knn_out"))
@@ -61,23 +62,17 @@ void get_param_mssd_video_knn(std::string &in,std::string &out)
     out = img_out;
 
 }
-void get_param_mssd_video(std::string &in,std::string &out)
+void CONFIG::get_param_mssd_video(std::string &in,std::string &out)
 {
+	fseek( file_open, 0, SEEK_SET );
     char img_in[200];
     char img_out[200];
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
         if (_str_cmp(str, (char *)"mssd_video_in"))
 			strncpy(img_in, str + 14, 200);
 		else if (_str_cmp(str, (char *)"mssd_video_out"))
 			strncpy(img_out, str + 15, 200);
-		
     }
 
     in = img_in;
@@ -85,16 +80,11 @@ void get_param_mssd_video(std::string &in,std::string &out)
 
 }
 
-void get_param_mms_cvCaptrue(int & dev)
+void CONFIG::get_param_mms_cvCaptrue(int & dev)
 {
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"mssd_cvCaptrue_dev"))
 		{
 			const char * split = " ";
@@ -106,18 +96,12 @@ void get_param_mms_cvCaptrue(int & dev)
     }
 
 }
-void get_param_mms_V4L2(std::string &dev)
+void CONFIG::get_param_mms_V4L2(std::string &dev)
 {
+	fseek( file_open, 0, SEEK_SET );
      char dev_name[200];
-
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
         if (_str_cmp(str, (char *)"mssd_v4l2_dev"))
 			strncpy(dev_name, str + 14, 200);
     }
@@ -125,16 +109,11 @@ void get_param_mms_V4L2(std::string &dev)
 
 }
 
-void get_camera_size(int &wid,int &hgt)
+void CONFIG::get_camera_size(int &wid,int &hgt)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"camera_width"))
 		{
 			const char * split = " ";
@@ -152,17 +131,12 @@ void get_camera_size(int &wid,int &hgt)
     }
 
 }
-void get_show_knn_box(bool &show)
+void CONFIG::get_show_knn_box(bool &show)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
 	int num;
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"show_knn_box"))
 		{
 			const char * split = " ";
@@ -173,17 +147,12 @@ void get_show_knn_box(bool &show)
     }
 	show = (bool)num;
 }
-void get_use_camera_or_video(bool &cov)
+void CONFIG::get_use_camera_or_video(bool &cov)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
 	int num;
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"use_camera_or_video"))
 		{
 			const char * split = " ";
@@ -195,17 +164,12 @@ void get_use_camera_or_video(bool &cov)
 	cov = (bool)num;
 }
 
-void get_save_video(bool &sv)
+void CONFIG::get_save_video(bool &sv)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
 	int num;
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"save_video"))
 		{
 			const char * split = " ";
@@ -216,17 +180,12 @@ void get_save_video(bool &sv)
     }
 	sv = (bool)num;
 }
-void get_roi_limit(bool &roi)
+void CONFIG::get_roi_limit(bool &roi)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
 	int num;
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"roi_limit"))
 		{
 			const char * split = " ";
@@ -237,17 +196,12 @@ void get_roi_limit(bool &roi)
     }
 	roi = (bool)num;
 }
-void get_show_img(bool &show)
+void CONFIG::get_show_img(bool &show)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
 	int num;
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"show_img"))
 		{
 			const char * split = " ";
@@ -258,18 +212,13 @@ void get_show_img(bool &show)
     }
 	show = (bool)num;
 }
-void get_captrue_save_data_floder(std::string &imag,std::string &video)
+void CONFIG::get_captrue_save_data_floder(std::string &imag,std::string &video)
 {
+	fseek( file_open, 0, SEEK_SET );
 	char in[200];
     char out[200];
-    FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
         if (_str_cmp(str, (char *)"captrue_data_save_img_floder"))
 			strncpy(in, str + 29, 200);
 		else if (_str_cmp(str, (char *)"captrue_data_save_video_floder"))
@@ -281,16 +230,11 @@ void get_captrue_save_data_floder(std::string &imag,std::string &video)
     video = out;
 
 }
-void get_captrue_data_save_video_mode(int &mode)
+void CONFIG::get_captrue_data_save_video_mode(int &mode)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"captrue_data_save_video_mode"))
 		{
 			const char * split = " ";
@@ -301,16 +245,11 @@ void get_captrue_data_save_video_mode(int &mode)
 		
     }
 }
-void get_move_percent(double & move)
+void CONFIG::get_move_percent(double & move)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"captrue_data_move_percent"))
 		{
 			const char * split = " ";
@@ -321,16 +260,11 @@ void get_move_percent(double & move)
 		
     }
 }
-void get_knn_thresh(double & th)
+void CONFIG::get_knn_thresh(double & th)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"knn_thresh"))
 		{
 			const char * split = " ";
@@ -341,16 +275,11 @@ void get_knn_thresh(double & th)
 		
     }
 }
-void get_knn_box_exist_cnt(int & cnt)
+void CONFIG::get_knn_box_exist_cnt(int & cnt)
 {
-		FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"knn_box_exist_cnt"))
 		{
 			const char * split = " ";
@@ -361,17 +290,26 @@ void get_knn_box_exist_cnt(int & cnt)
 		
     }
 }
-
-void get_move_buff_cnt(int & cnt)
+void CONFIG::get_fps_sleep(int & fs)
 {
-		FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
+       if (_str_cmp(str, (char *)"fps_sleep"))
+		{
+			const char * split = " ";
+			char *p = strtok(str, split);
+			p = strtok(NULL, split);
+			sscanf(p, "%d", &fs);
+		}
+		
+    }
+}
+void CONFIG::get_move_buff_cnt(int & cnt)
+{
+	fseek( file_open, 0, SEEK_SET );
+	char str[200];
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"captrue_data_move_buff_cnt"))
 		{
 			const char * split = " ";
@@ -382,16 +320,11 @@ void get_move_buff_cnt(int & cnt)
 		
     }
 }
-void get_captrue_data_save_img_mode(int &mode)
+void CONFIG::get_captrue_data_save_img_mode(int &mode)
 {
-	FILE *read_setup;
-    std::string config_file = "config.txt";
-	if ((read_setup = fopen(config_file.c_str(), "r")) == NULL) {
-		puts("Fail to open config.txt!");
-		exit(0);
-	}
+	fseek( file_open, 0, SEEK_SET );
 	char str[200];
-	while (fgets(str, 100, read_setup) != NULL) {
+	while (fgets(str, 100, file_open) != NULL) {
        if (_str_cmp(str, (char *)"captrue_data_save_img_mode"))
 		{
 			const char * split = " ";
@@ -402,7 +335,7 @@ void get_captrue_data_save_img_mode(int &mode)
 		
     }
 }
-void getTimesSecf(char *param)
+void CONFIG::getTimesSecf(char *param)
 {
 	time_t lastTime;
 	time(&lastTime);
@@ -424,7 +357,7 @@ void getTimesSecf(char *param)
 		t->tm_sec,
 		stTimeb.millitm);
 }
-void getTimesSec(char *param)
+void CONFIG::getTimesSec(char *param)
 {
 	time_t lastTime;
 	time(&lastTime);
@@ -445,7 +378,7 @@ void getTimesSec(char *param)
 		t->tm_min,
 		t->tm_sec);
 }
-int getTimesInt()
+int CONFIG::getTimesInt()
 {
 	time_t lastTime;
 	time(&lastTime);

@@ -69,10 +69,12 @@ public:
 cv::VideoCapture capture;
 VideoWriter outputVideo;
 V4L2 v4l2_;
+CONFIG config;
 unsigned int * pfb;
 SCREEN screen_;
 int IMG_WID;
 int IMG_HGT;
+int fps_usleep;
 cv::Mat frame;
 bool use_camera_not_video,save_video,quit;
 struct timeval show_img_time;
@@ -104,15 +106,17 @@ int main(int argc, char** argv) {
     gettimeofday(&show_img_time, NULL);
     std::string in_video_file;
     std::string out_video_file;
-    get_param_mssd_video_knn(in_video_file,out_video_file);
+    config.get_param_mssd_video_knn(in_video_file,out_video_file);
     LOGD("save  video:   %s",out_video_file.c_str());
     std::string dev_num;
-    get_param_mms_V4L2(dev_num);
+    config.get_param_mms_V4L2(dev_num);
     LOGD("open  %s",dev_num.c_str());
-    get_use_camera_or_video(use_camera_not_video);
+    config.get_use_camera_or_video(use_camera_not_video);
     LOGD("use_camera_not_video  %d",use_camera_not_video);
-    get_save_video(save_video);
+    config.get_save_video(save_video);
     LOGD("save_video  %d",save_video);
+    config.get_fps_sleep(fps_usleep);
+    LOGD("fps_usleep  %d",fps_usleep);
 
     frame.create(IMG_HGT,IMG_WID,CV_8UC3);
     frame = Mat::zeros(IMG_HGT,IMG_WID,CV_8UC3);
@@ -229,13 +233,13 @@ void *v4l2_thread(void *threadarg)
             v4l2_.read_frame(frame);
         }
 
-        int time_ = getTimesInt();
+        int time_ = config.getTimesInt();
         imagePair pframe(time_,frame);
         pthread_mutex_lock(&mutex_frameIn);
         if(queueFrameIn.size()<MAX_QUEUE_SIZE)
             queueFrameIn.push(pframe);
         pthread_mutex_unlock(&mutex_frameIn);
-        usleep(10000); 
+        usleep(fps_usleep); 
         __TOC__(CAMERA);
         
     }
@@ -266,9 +270,9 @@ void *screen_thread(void *threadarg)
             struct timeval t1;
             gettimeofday(&t1, NULL);
             float mytime = ( float )((t1.tv_sec * 1000000 + t1.tv_usec) - (show_img_time.tv_sec * 1000000 + show_img_time.tv_usec)) / 1000.0;
-            float fps = 1000.0/mytime;
+            int fps = (int)(1000.0/mytime);
             char buffer[32];
-            std::sprintf(buffer, "%0.2f",fps);
+            std::sprintf(buffer, "%d",fps);
             string fps_s = buffer;
             fps_str = "fps:"+fps_s;
 
@@ -355,7 +359,7 @@ void *npu_thread(void *threadarg)
         }
 
         // object track
-        int max_track_time = 10;
+        int max_track_time = 5;
         rockx_object_array_t in_track_objects;
         rockx_object_array_t out_track_objects;
 
@@ -391,10 +395,9 @@ void *npu_thread(void *threadarg)
             rockx_image_draw_text(&input_image, show_str, {left, top-8}, {0, 255, 0}, 1);
         }
 
-
         Mat show_img(input_image.height,input_image.width,CV_8UC3);
         memcpy(show_img.data,input_image.data,input_image.height*input_image.width*3*sizeof(uchar));
-        int time_ = getTimesInt();
+        int time_ = config.getTimesInt();
         imagePair pframe(time_,show_img);
         pthread_mutex_lock(&mutex_show);
         queueShow.push(pframe);

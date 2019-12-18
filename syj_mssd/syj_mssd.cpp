@@ -51,6 +51,7 @@ using namespace cv;
 cv::VideoCapture capture;
 VideoWriter outputVideo;
 V4L2 v4l2_;
+CONFIG config;
 unsigned int * pfb;
 SCREEN screen_;
 int IMG_WID;
@@ -61,7 +62,7 @@ int main(int argc, char** argv) {
 
     std::string in_video_file;
     std::string out_video_file;
-    get_param_mssd_video_knn(in_video_file,out_video_file);
+    config.get_param_mssd_video_knn(in_video_file,out_video_file);
     LOGD("save  video:   %s",out_video_file.c_str());
 
     Size sWH = Size( 2*IMG_WID,2*IMG_HGT);
